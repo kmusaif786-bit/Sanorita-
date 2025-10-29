@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<titl> Ap ke liye ❤️</title>
+<style>
+  :root{
+    --bg1:#0f2027;
+    --bg2:#203a43;
+    --accent:#ff4d6d;
+    --soft:#ffd4dc;
+    --glass: rgba(255,255,255,0.06);
+  }
+  html,body{
+    height:100%;
+    margin:0;
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    background: radial-gradient(1200px 600px at 10% 20%, #1b2733 0%, transparent 20%),
+                linear-gradient(120deg,var(--bg1),var(--bg2));
+    color: #fff;
+    overflow:hidden;
+  }
+
+  /* Center card */
+  .stage{
+    position: absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+  }
+
+  .card{
+    pointer-events:auto;
+    width: min(920px, 92vw);
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border-radius: 18px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    padding: 36px;
+    display:flex;
+    gap: 28px;
+    align-items:center;
+    justify-content:space-between;
+    backdrop-filter: blur(6px) saturate(120%);
+  }
+
+  /* Left: big heart + button */
+  .left{
+    display:flex;
+    gap:18px;
+    align-items:center;
+  }
+  .heart-wrap{
+    width:200px;
+    height:200px;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    user-select:none;
+  }
+
+  svg.heart{
+    width:160px;
+    height:160px;
+    transform-origin:center;
+    transition: transform 220ms cubic-bezier(.2,.9,.2,1);
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+  }
+
+  /* Pulsing animation that we toggle */
+  .pulse{
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse{
+    0%{ transform: scale(1); filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));}
+    50%{ transform: scale(1.06) rotate(-2deg); filter: drop-shadow(0 18px 28px rgba(0,0,0,0.45));}
+    100%{ transform: scale(1); filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));}
+  }
+
+  /* Right: message area */
+  .right{
+    width: 55%;
+    min-width: 260px;
+  }
+
+  h1{
+    margin:0 0 8px 0;
+    font-size: clamp(20px, 3.8vw, 28px);
+    letter-spacing: -0.5px;
+    color: var(--soft);
+  }
+  p.desc{
+    margin:0 0 16px 0;
+    opacity:0.9;
+    color: #f7d7dd;
+  }
+
+  .typewriter{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:16px;
+    border-radius:12px;
+    min-height:86px;
+    display:flex;
+    align-items:flex-start;
+    font-size: clamp(16px, 2.2vw, 18px);
+    line-height:1.45;
+    color:#fff;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    position:relative;
+    overflow:hidden;
+  }
+
+  .cursor{
+    display:inline-block;
+    width:8px;
+    height:18px;
+    background: linear-gradient(180deg,var(--soft),#fff);
+    margin-left:4px;
+    animation: blink 1s infinite;
+    vertical-align: middle;
+  }
+  @keyframes blink{ 0%,50%{opacity:1} 51%,100%{opacity:0} }
+
+  /* small controls */
+  .controls{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+  }
+  .btn{
+    background: var(--glass);
+    border: 1px solid rgba(255,255,255,0.04);
+    color: #fff;
+    padding:10px 14px;
+    border-radius: 999px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:14px;
+  }
+  .btn:active{ transform: translateY(1px); }
+
+  /* floating hearts (absolute) */
+  .float-layer{
+    pointer-events:none;
+    position:absolute;
+    inset:0;
+    overflow:visible;
+  }
+
+  /* footer note */
+  .note{
+    position:absolute;
+    bottom:16px;
+    left:16px;
+    font-size:13px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* small responsive */
+  @media (max-width:720px){
+    .card{ flex-direction:column; padding:22px; gap:18px; align-items:center; text-align:center;}
+    .right{ width:100%;}
+    .left{ padding-top:6px;}
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="card" role="region" aria-label="Special message">
+      <div class="left">
+        <div class="heart-wrap" id="heartWrap" title="Click me ♥">
+          <!-- SVG heart -->
+          <svg class="heart" viewBox="0 0 32 29" id="heartSVG" aria-hidden="true">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1">
+                <stop offset="0" stop-color="#ff8aa0"/>
+                <stop offset="1" stop-color="#ff4d6d"/>
+              </linearGradient>
+            </defs>
+            <path d="M23.6,0C21,0,18.9,1.6,17.8,3.6C16.7,1.6,14.6,0,12,0C7.1,0,3.6,3.5,3.6,8.3c0,7.4,12.3,13.8,14.1,15.1c0.5,0.4,1.2,0.4,1.7,0
+              c1.9-1.3,14.1-7.7,14.1-15.1C28.4,3.5,24.9,0,20,0z"
+              fill="url(#g)" stroke="#ffd4dc" stroke-width="0.6"/>
+          </svg>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-weight:700; font-size:16px; color:var(--soft)">Click the heart</div>
+          <div style="opacity:0.9; font-size:13px">Make it pulse — surprise them with a message</div>
+          <div style="margin-top:6px; display:flex; gap:8px;">
+            <button class="btn" id="replay">Replay</button>
+            <button class="btn" id="customize">Quick Edit</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="right">
+        <h1>Just for you ❤️</h1>
+        <p class="desc">A little surprise — click the heart and watch the message appear.</p>
+
+        <div class="typewriter" id="typeArea" aria-live="polite">
+          <div id="typed"></div><div class="cursor" id="cursor"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn" id="skip">Show Full</button>
+          <button class="btn" id="saveBtn">Save as Image</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- floating hearts / canvas -->
+  <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+
+  <div class="note">Tip: Change the message below (in the script) to personalize it ✨</div>
+
+<script>
+/* -----------------------------
+   Configurable message (edit this)
+   ----------------------------- */
+const MESSAGE = "Hey — I've been wanting to tell you something. Every time I see you, my day gets brighter. Would you like to grab coffee sometime? ☕️💖";
+
+/* -----------------------------
+   Typewriter + controls
+   ----------------------------- */
+const typedEl = document.getElementById('typed');
+const cursorEl = document.getElementById('cursor');
+const heartWrap = document.getElementById('heartWrap');
+const heartSVG = document.getElementById('heartSVG');
+const replayBtn = document.getElementById('replay');
+const skipBtn = document.getElementById('skip');
+const customizeBtn = document.getElementById('customize');
+const saveBtn = document.getElementById('saveBtn');
+
+let index = 0;
+let typing = false;
+let timer = null;
+
+// Typewriter function (progressive)
+function startTyping(text, speed=40){
+  clearInterval(timer);
+  index = 0;
+  typedEl.textContent = "";
+  typing = true;
+  cursorEl.style.display = "inline-block";
+  timer = setInterval(()=>{
+    if(index < text.length){
+      typedEl.textContent += text[index++];
+    } else {
+      clearInterval(timer);
+      typing = false;
+      cursorEl.style.display = "none";
+    }
+  }, speed);
+}
+
+// Show full instantly
+function showFull(){
+  clearInterval(timer);
+  typedEl.textContent = MESSAGE;
+  typing = false;
+  cursorEl.style.display = "none";
+}
+
+// Replay animation (heart pulse + typing + confetti)
+function replay(){
+  // small heart "pop"
+  heartSVG.classList.remove('pulse');
+  void heartSVG.offsetWidth;
+  heartSVG.classList.add('pulse');
+  // start typing after a short delay
+  showFloatBurst(); // hearts float once
+  setTimeout(()=> startTyping(MESSAGE, 36), 380);
+  // confetti after typing completes
+  if (typing) {
+    // schedule confetti once done
+    const check = setInterval(()=>{
+      if(!typing){ confettiBurst(); clearInterval(check); }
+    },200);
+  } else {
+    setTimeout(confettiBurst, 1400);
+  }
+}
+
+/* -----------------------------
+   Floating hearts layer
+   ----------------------------- */
+const floatLayer = document.getElementById('floatLayer');
+
+function makeHeart(x, y, scale=1){
+  const el = document.createElement('div');
+  const size = 18 + Math.random()*32;
+  el.style.position = 'absolute';
+  el.style.left = (x - size/2) + 'px';
+  el.style.top = (y - size/2) + 'px';
+  el.style.pointerEvents = 'none';
+  el.style.width = size + 'px';
+  el.style.height = size + 'px';
+  el.style.transform = 'rotate('+ (Math.random()*30-15) +'deg)';
+  el.style.transition = 'transform 1.6s linear, opacity 1.6s linear';
+  el.innerHTML = `<svg viewBox="0 0 32 29" style="width:100%; height:100%"><path d="M23.6,0C21,0,18.9,1.6,17.8,3.6C16.7,1.6,14.6,0,12,0C7.1,0,3.6,3.5,3.6,8.3c0,7.4,12.3,13.8,14.1,15.1c0.5,0.4,1.2,0.4,1.7,0 c1.9-1.3,14.1-7.7,14.1-15.1C28.4,3.5,24.9,0,20,0z" fill="${randomColor()}" /></svg>`;
+  floatLayer.appendChild(el);
+  // animate upwards and fade
+  requestAnimationFrame(()=>{
+    el.style.transform = `translateY(-${120 + Math.random()*200}px) rotate(${Math.random()*90 - 45}deg) scale(${1 + Math.random()*0.35})`;
+    el.style.opacity = '0';
+  });
+  setTimeout(()=> el.remove(), 2000 + Math.random()*800);
+}
+
+function randomColor(){
+  const palette = ['#ff7b9a','#ffd1da','#ff5c7a','#ff9fb3','#ff4d6d'];
+  return palette[Math.floor(Math.random()*palette.length)];
+}
+
+function showFloatBurst(){
+  // spawn a cluster around heartWrap center
+  const rect = heartWrap.getBoundingClientRect();
+  const centerX = rect.left + rect.width/2;
+  const centerY = rect.top + rect.height/2;
+  for(let i=0;i<12;i++){
+    setTimeout(()=> makeHeart(centerX + (Math.random()*120-60), centerY + (Math.random()*80-40)), i*40);
+  }
+}
+
+/* -----------------------------
+   Confetti burst (canvas)
+   ----------------------------- */
+function confettiBurst(){
+  const canvas = document.createElement('canvas');
+  canvas.style.position='absolute';
+  canvas.style.left='0'; canvas.style.top='0';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.pointerEvents = 'none';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  const pieces = [];
+  const count = 60;
+  const colors = ['#ff4d6d','#ffd4dc','#ffd28a','#ff9fb3','#ffffff'];
+  for(let i=0;i<count;i++){
+    pieces.push({
+      x: window.innerWidth/2 + (Math.random()*200-100),
+      y: window.innerHeight/2 + (Math.random()*80-40),
+      vx: (Math.random()-0.5)*8,
+      vy: -Math.random()*10 - 2,
+      r: 6 + Math.random()*8,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      rot: Math.random()*360,
+      dr: (Math.random()-0.5)*8,
+      ttl: 90 + Math.random()*40
+    });
+  }
+
+  let frame = 0;
+  function draw(){
+    frame++;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=0;i<pieces.length;i++){
+      const p = pieces[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.38; // gravity
+      p.rot += p.dr;
+      p.ttl--;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot * Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*1.8);
+      ctx.restore();
+    }
+    if(frame < 160){
+      requestAnimationFrame(draw);
+    } else {
+      canvas.remove();
+    }
+  }
+  draw();
+}
+
+/* -----------------------------
+   Save as image (screenshot of card)
+   ----------------------------- */
+saveBtn.addEventListener('click', ()=> {
+  // create a temporary canvas and draw the card node on it using svg foreignObject
+  const card = document.querySelector('.card');
+  const rect = card.getBoundingClientRect();
+
+  // Inline clone to a new SVG to rasterize via data URL
+  const cloned = card.cloneNode(true);
+  // Remove interactive elements that won't render well
+  cloned.querySelectorAll('button').forEach(b => b.remove());
+  // Inline styles so it appears similar
+  const wrapper = document.createElement('div');
+  wrapper.style.width = rect.width + 'px';
+  wrapper.style.height = rect.height + 'px';
+  wrapper.style.display = 'inline-block';
+  wrapper.appendChild(cloned);
+
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${rect.width}' height='${rect.height}'>
+    <foreignObject width='100%' height='100%'>${new XMLSerializer().serializeToString(wrapper)}</foreignObject>
+  </svg>`;
+  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = rect.width * 2; c.height = rect.height * 2;
+    const ctx = c.getContext('2d');
+    ctx.scale(2,2);
+    ctx.drawImage(img,0,0);
+    const link = document.createElement('a');
+    link.download = 'special_message.png';
+    link.href = c.toDataURL('image/png');
+    link.click();
+  };
+  img.src = url;
+});
+
+/* -----------------------------
+   Interactions & events
+   ----------------------------- */
+heartWrap.addEventListener('click', ()=> {
+  // visual feedback
+  heartSVG.classList.remove('pulse');
+  void heartSVG.offsetWidth;
+  heartSVG.classList.add('pulse');
+  // spawn hearts
+  showFloatBurst();
+  // start typing
+  startTyping(MESSAGE, 36);
+  // schedule confetti
+  const check = setInterval(()=> {
+    if(!typing){ confettiBurst(); clearInterval(check); }
+  },200);
+});
+
+replayBtn.addEventListener('click', ()=> { replay(); });
+skipBtn.addEventListener('click', ()=> { showFull(); });
+
+customizeBtn.addEventListener('click', ()=> {
+  const newText = prompt("Edit the message (preview). Make it personal!", MESSAGE);
+  if(newText !== null){
+    // update message at runtime
+    // (Note: this doesn't persist to file — edit the MESSAGE constant in the file to make permanent)
+    window.customMessage = newText;
+    // if typing currently, stop & show new one
+    showFull();
+    startTyping(window.customMessage, 36);
+  }
+});
+
+/* allow pressing Enter to trigger heart */
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') heartWrap.click();
+});
+
+/* small responsive updates */
+window.addEventListener('resize', ()=> {
+  // nothing heavy here; floating canvas uses window dimensions when created
+});
+
+/* kickoff: gentle float hearts + faint pulse */
+(function init(){
+  // small recurring soft hearts
+  setInterval(()=> {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const x = Math.random()*w;
+    const y = h*0.75 + Math.random()*120;
+    makeHeart(x,y, 0.6 + Math.random()*0.6);
+  }, 900);
+
+  // subtle pulse start
+  setTimeout(()=> heartSVG.classList.add('pulse'), 420);
+})();
+
+</script>
+</body>
+</html>
